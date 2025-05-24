@@ -4,11 +4,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from dotenv import load_dotenv
 from langchain_groq import ChatGroq
-from langchain_core.prompts import PromptTemplate
+from langchain.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import StrOutputParser
 
 load_dotenv()
-
 app = FastAPI()
 
 app.add_middleware(
@@ -21,10 +20,11 @@ app.add_middleware(
 
 GROQ_API_KEY: str | None = os.getenv("GROQ_API_KEY")
 
-llm = ChatGroq(model="llama3-8b-8192", temperature=0, groq_api_key=GROQ_API_KEY)    
+llm = ChatGroq(model="llama3-8b-8192", api_key=os.getenv("GROQ_API_KEY"))
+
 
 # Define Prompt Template
-prompt_template = PromptTemplate.from_template("""
+prompt_template = ChatPromptTemplate.from_template("""
 You're a certified personal trainer.
 
 Create a personalized {days}-day workout plan for a user based on:
